@@ -1,159 +1,56 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlipzzyHost - Store</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <script src="config.js"></script>
-</head>
-<body>
-    <div class="overlay">
-        <nav>
-            <div class="logo"><img src="https://files.catbox.moe/vztxl0.png"></div>
-            <div class="dropdown">
-                <button class="dropbtn">DASHBOARD ▼</button>
-                <div class="dropdown-content">
-                    <a href="index.html">Home</a>
-                    <a href="dashboard.html">Account</a>
-                    <a href="login.html">Login</a>
-                    <a href="register.html">Register</a>
-                </div>
-            </div>
-        </nav>
+:root {
+    --neon: #ff007f;
+    --dark: #0a0a0a;
+    --glass: rgba(255, 255, 255, 0.05);
+}
 
-        <div class="banner"><img src="https://files.catbox.moe/emcga5.png"></div>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
-        <div class="container">
-            <div class="card">
-                <img src="https://files.catbox.moe/2m4wqm.jpg" class="prod-logo">
-                <h3>Tredict Invictus</h3>
-                <select id="price1">
-                    <optgroup label="Telegram">
-                        <option value="60000">Telegram - Rp60.000 [Update 3x]</option>
-                        <option value="100000">Telegram - Rp100.000 [Full Update]</option>
-                        <option value="120000">Telegram - Rp120.000 [Reseller]</option>
-                    </optgroup>
-                    <optgroup label="Aplikasi">
-                        <option value="15000">App - Rp15.000 [7 Hari]</option>
-                        <option value="60000">App - Rp60.000 [30 Hari]</option>
-                        <option value="140000">App - Rp140.000 [Permanent]</option>
-                        <option value="170000">App - Rp170.000 [Reseller Perm]</option>
-                    </optgroup>
-                </select>
-                <button class="btn-buy" onclick="handleBuy('Tredict Invictus', 'price1')">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+body {
+    background: url('https://files.catbox.moe/zrjo4j.jpg') fixed center;
+    background-size: cover;
+    color: white;
+}
 
-            <div class="card">
-                <h3>OTAX</h3>
-                <select id="price2">
-                    <option value="60000">Telegram - Rp60.000 [Full Update]</option>
-                    <option value="60000">WhatsApp - Rp60.000 [Full Update]</option>
-                    <option value="40000">App - Rp40.000 [30 Hari]</option>
-                    <option value="60000">App - Rp60.000 [Permanent]</option>
-                </select>
-                <button class="btn-buy" onclick="handleBuy('OTAX', 'price2')">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+.overlay { background: rgba(0, 0, 0, 0.85); min-height: 100vh; padding-bottom: 50px; }
 
-            <div class="card">
-                <h3>Jasa Buat Website</h3>
-                <p style="font-size:10px; text-align:left;">• Get Subdomain • Free Req Nama/Logo • Web On 24 Jam • Get .com/.id (>300rb)</p>
-                <select id="price3">
-                    <option value="70000">Portofolio - Rp70.000</option>
-                    <option value="730000">Store Online - Rp730.000</option>
-                    <option value="165000">Payment Otomatis - Rp165.000</option>
-                    <option value="50000">Payment Manual - Rp50.000</option>
-                </select>
-                <button class="btn-buy" onclick="handleBuy('Jasa Website', 'price3')">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+/* Navbar */
+nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 5%; background: #000; border-bottom: 2px solid var(--neon);
+    position: sticky; top: 0; z-index: 1000;
+}
 
-            <div class="card">
-                <h3>Jasa Buat Aplikasi Bug</h3>
-                <p style="font-size:10px; text-align:left;">• Free Logo/Nama/Banner • Get File Zip • Delay Invisible</p>
-                <h4 style="color:var(--neon)">Rp150.000</h4>
-                <button class="btn-buy" onclick="handleBuy('App Bug', 150000)">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+.logo img { height: 45px; }
 
-            <div class="card">
-                <h3>Script Bug Telegram</h3>
-                <p style="font-size:10px; text-align:left;">• Get 2 Function Random • No Encrypt/Encrypt • Panel Unlimited</p>
-                <h4 style="color:var(--neon)">Rp60.000</h4>
-                <button class="btn-buy" onclick="handleBuy('Script Bug Tele', 60000)">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+/* Dropdown Menu */
+.dropdown { position: relative; }
+.dropbtn { background: var(--neon); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.dropdown-content {
+    display: none; position: absolute; right: 0; background: #111;
+    min-width: 180px; border: 1px solid var(--neon); border-radius: 5px; overflow: hidden;
+}
+.dropdown-content a { color: white; padding: 12px 16px; text-decoration: none; display: block; }
+.dropdown-content a:hover { background: var(--neon); }
+.dropdown:hover .dropdown-content { display: block; }
 
-            <div class="card">
-                <h3>Script WhatsApp</h3>
-                <select id="price6">
-                    <option value="70000">MD (Multi Device) - Rp70.000</option>
-                    <option value="50000">Bug - Rp50.000</option>
-                    <option value="25000">Cpanel - Rp25.000</option>
-                    <option value="30000">Pushkontak & Jpm - Rp30.000</option>
-                </select>
-                <button class="btn-buy" onclick="handleBuy('Script WA', 'price6')">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+/* Banner */
+.banner { width: 90%; max-width: 1100px; margin: 20px auto; border: 2px solid var(--neon); border-radius: 15px; overflow: hidden; }
+.banner img { width: 100%; display: block; }
 
-            <div class="card">
-                <h3>Open Murid Bug (Tele)</h3>
-                <select id="price7">
-                    <option value="15000">Member Biasa - Rp15.000</option>
-                    <option value="30000">Reseller Murbug - Rp30.000</option>
-                    <option value="50000">Admin Murbug - Rp50.000</option>
-                </select>
-                <button class="btn-buy" onclick="handleBuy('Murid Bug', 'price7')">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+/* Product Grid */
+.container { width: 90%; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card {
+    background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--neon);
+    border-radius: 15px; padding: 20px; text-align: center; transition: 0.3s;
+}
+.card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--neon); }
+.card img.prod-logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--neon); margin-bottom: 10px; }
 
-            <div class="card">
-                <h3>Jasa Fix Script</h3>
-                <p>HTML, JS, Python, PHP, CSS</p>
-                <h4 style="color:var(--neon)">Rp15.000</h4>
-                <button class="btn-buy" onclick="handleBuy('Fix Script', 15000)">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
+select, input { width: 100%; padding: 12px; margin: 10px 0; background: #222; color: white; border: 1px solid #444; border-radius: 8px; }
+.btn-buy { background: var(--neon); color: white; font-weight: bold; cursor: pointer; border: none; padding: 12px; border-radius: 8px; width: 100%; }
+.btn-cart { background: transparent; border: 1px solid var(--neon); color: white; cursor: pointer; margin-top: 5px; padding: 8px; border-radius: 8px; width: 100%; }
 
-            <div class="card">
-                <h3>Jasa Bug WhatsApp</h3>
-                <h4 style="color:var(--neon)">Rp6.000</h4>
-                <button class="btn-buy" onclick="handleBuy('Jasa Bug WA', 6000)">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
-
-            <div class="card">
-                <h3>Panel Pterodactyl</h3>
-                <p style="font-size:10px; text-align:left;">• Garansi 15 Hari • VPS Legal • Server Kenceng</p>
-                <h4 style="color:var(--neon)">Rp15.000</h4>
-                <button class="btn-buy" onclick="handleBuy('Panel Ptero', 15000)">Buy</button>
-                <button class="btn-cart">Cart</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="annModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#000; border:2px solid #ff007f; padding:30px; z-index:9999; border-radius:15px; width:80%; max-width:400px; text-align:center;">
-        <h2 id="annTitle" style="color:#ff007f"></h2>
-        <p id="annBody" style="margin:15px 0"></p>
-        <button class="btn-buy" onclick="document.getElementById('annModal').style.display='none'">OKE OWNER</button>
-    </div>
-
-    <script>
-        function handleBuy(name, id) {
-            const user = localStorage.getItem('currentUser');
-            if (!user) {
-                alert("Wajib Login Terlebih Dahulu!");
-                window.location.href = 'login.html';
-                return;
-            }
-            let price = typeof id === 'number' ? id : document.getElementById(id).value;
-            window.location.href = `dashboard.html?action=payment&item=${name}&price=${price}`;
-        }
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
+/* Admin Dashboard Table */
+table { width: 100%; border-collapse: collapse; margin-top: 20px; color: white; }
+th, td { border: 1px solid var(--neon); padding: 12px; text-align: center; font-size: 14px; }
