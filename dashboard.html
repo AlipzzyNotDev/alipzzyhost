@@ -1,83 +1,122 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
     <meta charset="UTF-8">
-    <title>Dashboard & Payment</title>
+    <title>Dashboard - AlipzzyHost</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .admin-section { display: none; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid var(--neon-pink); padding: 10px; text-align: center; }
-    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="config.js"></script>
 </head>
 <body>
     <div class="overlay">
-        <div id="paymentArea" style="display:none; text-align:center; padding-top: 50px;">
-            <div class="card" style="max-width: 400px; margin: auto; background: white; color: black;">
-                <h2 style="color:black">PEMBAYARAN QRIS</h2>
-                <img src="https://files.catbox.moe/t8p77l.jpeg" width="100%">
-                <p>Selesaikan dalam: <span id="timer" style="color:red; font-weight:bold;">10:00</span></p>
-                <input type="file" id="bukti" style="background:#eee; color:black;">
-                <button class="btn-buy" onclick="kirimBukti()">Selesai Bayar</button>
+        <nav>
+            <div class="logo"><img src="https://files.catbox.moe/vztxl0.png"></div>
+            <a href="index.html" style="color:white; text-decoration:none;">Back to Home</a>
+        </nav>
+
+        <div id="userSection" style="display:none; padding: 30px;">
+            <div class="card" style="max-width: 450px; margin: auto; background: white; color: black;">
+                <h2 style="color:black">CHECKOUT</h2>
+                <p id="itemDetail" style="font-weight:bold; margin: 10px 0;"></p>
+                <img src="https://files.catbox.moe/t8p77l.jpeg" width="100%" style="border-radius:10px;">
+                <div id="timer" style="font-size: 25px; color: red; font-weight: bold; margin: 15px 0;">10:00</div>
+                <p style="font-size:12px;">Silakan upload bukti transfer:</p>
+                <input type="file" id="buktiTf" style="color:black; background:#eee;">
+                <button class="btn-buy" onclick="kirimOrder()">Selesai Bayar</button>
             </div>
         </div>
 
-        <div id="adminArea" class="admin-section" style="width:90%; margin:auto;">
-            <h1>ADMIN PANEL - ALIPZZY</h1>
-            <p>Tanggal: <span id="curDate"></span></p>
-            <div style="display:flex; gap:10px; margin:20px 0;">
-                <button onclick="sendGlobal()">Kirim Pengumuman Global</button>
-                <button onclick="sendPrivate()">Kirim Pesan Individu</button>
+        <div id="adminSection" style="display:none; width: 90%; margin: auto; padding: 30px;">
+            <h1 style="color:var(--neon)">ADMIN DASHBOARD</h1>
+            <div id="adminStats" style="display:flex; gap:15px; margin: 20px 0;">
+                <div class="card" style="flex:1;">TRX Hari Ini: <br><span id="todayTrx">0</span></div>
+                <div class="card" style="flex:1;">TRX Bulan Ini: <br><span id="monthTrx">0</span></div>
             </div>
-            <h3>Daftar Pesanan</h3>
-            <table>
-                <thead>
-                    <tr><th>User</th><th>Status</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="orderTable">
-                    <tr><td>User_Buyer</td><td><span style="color:orange">Proses</span></td><td><button onclick="alert('Refund Berhasil')">Refund</button></td></tr>
-                </tbody>
-            </table>
+            
+            <button class="btn-buy" onclick="sendAnnouncement()" style="margin-bottom:10px;">KIRIM POP-UP GLOBAL</button>
+            <button class="btn-buy" onclick="sendPrivateMsg()" style="background:blue;">PESAN INDIVIDU</button>
+
+            <h3>Pesanan Masuk</h3>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr><th>User</th><th>Item</th><th>Harga</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="orderList">
+                        </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
         const user = JSON.parse(localStorage.getItem('currentUser'));
+        const params = new URLSearchParams(window.location.search);
 
-        // Cek Role Admin
-        if (user && user.username === 'AlipzzyOfficiaL') {
-            document.getElementById('adminArea').style.display = 'block';
-            document.getElementById('curDate').innerText = new Date().toLocaleDateString();
+        if (user && user.username === "AlipzzyOfficiaL") {
+            document.getElementById('adminSection').style.display = 'block';
+            loadOrders();
         } else if (params.get('action') === 'payment') {
-            document.getElementById('paymentArea').style.display = 'block';
+            document.getElementById('userSection').style.display = 'block';
+            document.getElementById('itemDetail').innerText = `${params.get('item')} - Rp${params.get('price')}`;
             startTimer();
         }
 
         function startTimer() {
             let time = 600;
-            const display = document.getElementById('timer');
-            setInterval(() => {
-                let min = Math.floor(time / 60);
-                let sec = time % 60;
-                display.innerText = `${min}:${sec < 10 ? '0'+sec : sec}`;
-                if (time > 0) time--;
+            const timerDiv = document.getElementById('timer');
+            const countdown = setInterval(() => {
+                let m = Math.floor(time / 60);
+                let s = time % 60;
+                timerDiv.innerHTML = `${m}:${s < 10 ? '0'+s : s}`;
+                if (time-- <= 0) clearInterval(countdown);
             }, 1000);
         }
 
-        function kirimBukti() {
-            alert("Bukti terkirim! Admin akan memproses dalam 1-10 menit.");
-            window.location.href = "index.html";
+        function kirimOrder() {
+            const item = params.get('item');
+            const price = params.get('price');
+            db.ref('orders').push({
+                username: user.username,
+                item: item,
+                price: price,
+                status: 'Proses',
+                timestamp: Date.now()
+            });
+            alert("Pembayaran Terkirim! Mohon tunggu konfirmasi admin 1-10 menit.");
+            window.location.href = 'index.html';
         }
 
-        function sendGlobal() {
-            const msg = prompt("Isi Pengumuman Global:");
-            localStorage.setItem('globalAnn', msg);
-            alert("Terkirim ke semua user!");
+        function loadOrders() {
+            db.ref('orders').on('value', (snap) => {
+                const list = document.getElementById('orderList');
+                list.innerHTML = "";
+                snap.forEach(child => {
+                    const data = child.val();
+                    list.innerHTML += `
+                        <tr>
+                            <td>${data.username}</td>
+                            <td>${data.item}</td>
+                            <td>${data.price}</td>
+                            <td>${data.status}</td>
+                            <td>
+                                <button onclick="updateStatus('${child.key}', 'Selesai')">Selesai</button>
+                                <button onclick="updateStatus('${child.key}', 'Refund')">Refund</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function updateStatus(id, status) {
+            db.ref('orders/' + id).update({ status: status });
+        }
+
+        function sendAnnouncement() {
+            const msg = prompt("Isi Pop-up Global:");
+            if (msg) db.ref('announcements/global').set({ text: msg, active: true });
         }
     </script>
 </body>
