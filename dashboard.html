@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard & Payment</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-section { display: none; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid var(--neon-pink); padding: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div id="paymentArea" style="display:none; text-align:center; padding-top: 50px;">
+            <div class="card" style="max-width: 400px; margin: auto; background: white; color: black;">
+                <h2 style="color:black">PEMBAYARAN QRIS</h2>
+                <img src="https://files.catbox.moe/t8p77l.jpeg" width="100%">
+                <p>Selesaikan dalam: <span id="timer" style="color:red; font-weight:bold;">10:00</span></p>
+                <input type="file" id="bukti" style="background:#eee; color:black;">
+                <button class="btn-buy" onclick="kirimBukti()">Selesai Bayar</button>
+            </div>
+        </div>
+
+        <div id="adminArea" class="admin-section" style="width:90%; margin:auto;">
+            <h1>ADMIN PANEL - ALIPZZY</h1>
+            <p>Tanggal: <span id="curDate"></span></p>
+            <div style="display:flex; gap:10px; margin:20px 0;">
+                <button onclick="sendGlobal()">Kirim Pengumuman Global</button>
+                <button onclick="sendPrivate()">Kirim Pesan Individu</button>
+            </div>
+            <h3>Daftar Pesanan</h3>
+            <table>
+                <thead>
+                    <tr><th>User</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="orderTable">
+                    <tr><td>User_Buyer</td><td><span style="color:orange">Proses</span></td><td><button onclick="alert('Refund Berhasil')">Refund</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Cek Role Admin
+        if (user && user.username === 'AlipzzyOfficiaL') {
+            document.getElementById('adminArea').style.display = 'block';
+            document.getElementById('curDate').innerText = new Date().toLocaleDateString();
+        } else if (params.get('action') === 'payment') {
+            document.getElementById('paymentArea').style.display = 'block';
+            startTimer();
+        }
+
+        function startTimer() {
+            let time = 600;
+            const display = document.getElementById('timer');
+            setInterval(() => {
+                let min = Math.floor(time / 60);
+                let sec = time % 60;
+                display.innerText = `${min}:${sec < 10 ? '0'+sec : sec}`;
+                if (time > 0) time--;
+            }, 1000);
+        }
+
+        function kirimBukti() {
+            alert("Bukti terkirim! Admin akan memproses dalam 1-10 menit.");
+            window.location.href = "index.html";
+        }
+
+        function sendGlobal() {
+            const msg = prompt("Isi Pengumuman Global:");
+            localStorage.setItem('globalAnn', msg);
+            alert("Terkirim ke semua user!");
+        }
+    </script>
+</body>
+</html>
