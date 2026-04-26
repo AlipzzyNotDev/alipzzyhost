@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>AlipzzyHost - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="overlay">
+        <nav>
+            <div class="logo"><img src="https://files.catbox.moe/vztxl0.png" alt="Logo"></div>
+            <div class="dropdown">
+                <button class="dropbtn">DASHBOARD ▼</button>
+                <div class="dropdown-content">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Account</a>
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                    <a href="#">Top Transaksi</a>
+                    <a href="dashboard.html">Pesanan Invoice</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="banner"><img src="https://files.catbox.moe/emcga5.png"></div>
+
+        <div class="container">
+            <div class="card">
+                <img src="https://files.catbox.moe/2m4wqm.jpg" class="prod-logo">
+                <h3>Tredict Invictus</h3>
+                <select id="price1">
+                    <option value="60000">Telegram - Rp60.000 [Update 3x]</option>
+                    <option value="100000">Telegram - Rp100.000 [Full Update]</option>
+                    <option value="140000">Aplikasi - Rp140.000 [Permanent]</option>
+                </select>
+                <button class="btn-buy" onclick="handleAction('buy')">Buy Now</button>
+                <button class="btn-cart" onclick="handleAction('cart')">Add Cart</button>
+            </div>
+
+            <div class="card">
+                <h3>Jasa Buat Website</h3>
+                <p style="font-size:12px; text-align:left; margin:10px 0;">• Free Req Logo/Nama<br>• On 24 Jam<br>• Get Domain .com (>300k)</p>
+                <select id="price3">
+                    <option value="70000">Portofolio - Rp70.000</option>
+                    <option value="730000">Store Online - Rp730.000</option>
+                    <option value="165000">Otomatis - Rp165.000</option>
+                </select>
+                <button class="btn-buy" onclick="handleAction('buy')">Buy Now</button>
+                <button class="btn-cart" onclick="handleAction('cart')">Add Cart</button>
+            </div>
+
+            <div class="card">
+                <h3>Panel Pterodactyl</h3>
+                <p>Unlimited Server & Legal VPS</p>
+                <h4 style="margin:10px 0; color:var(--neon-pink)">Rp15.000</h4>
+                <button class="btn-buy" onclick="handleAction('buy')">Buy Now</button>
+                <button class="btn-cart" onclick="handleAction('cart')">Add Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="annModal" class="modal">
+        <div class="modal-content">
+            <h2 id="annTitle">PENGUMUMAN</h2>
+            <p id="annBody" style="margin:20px 0;"></p>
+            <button class="btn-buy" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function handleAction(type) {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                alert("Wajib Login Terlebih Dahulu!");
+                window.location.href = "login.html";
+            } else {
+                if(type === 'buy') window.location.href = "dashboard.html?action=payment";
+                else alert("Berhasil ditambah ke keranjang!");
+            }
+        }
+
+        // Cek Pesan dari Owner/Global
+        window.onload = function() {
+            const globalAnn = localStorage.getItem('globalAnn');
+            if(globalAnn) {
+                document.getElementById('annBody').innerText = globalAnn;
+                document.getElementById('annModal').style.display = 'block';
+            }
+        };
+        function closeModal() { document.getElementById('annModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
