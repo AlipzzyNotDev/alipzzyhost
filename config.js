@@ -1,14 +1,19 @@
-// Konfigurasi Firebase (Ganti dengan API Key milikmu)
-const firebaseConfig = {
-    apiKey: "AIzaSy...",
-    authDomain: "alipzzyhost.firebaseapp.com",
-    databaseURL: "https://alipzzyhost-default-rtdb.firebaseio.com",
-    projectId: "alipzzyhost",
-    storageBucket: "alipzzyhost.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:12345:web:abcde"
-};
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-// Inisialisasi Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDI5C_DGu-fZOUbr0rw6SkTJw7mFxMYW-w",
+    authDomain: "alipzzyhost.firebaseapp.com",
+    projectId: "alipzzyhost",
+    storageBucket: "alipzzyhost.firebasestorage.app",
+    messagingSenderId: "1087809918545",
+    appId: "1:1087809918545:web:5e27d702d35667caf28a70",
+    measurementId: "G-EJ9239LECR",
+    databaseURL: "https://alipzzyhost-default-rtdb.asia-southeast1.firebasedatabase.app" 
+  };
+
+  // Inisialisasi Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
