@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlipzzyHost - Register</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            max-width: 400px; margin: 80px auto; padding: 30px;
+            background: rgba(0,0,0,0.8); border: 2px solid var(--neon-pink);
+            border-radius: 15px; text-align: center;
+        }
+        h2 { color: var(--neon-pink); margin-bottom: 20px; }
+        input { background: #222; color: white; border: 1px solid #444; margin-bottom: 15px; }
+        .link-auth { display: block; margin-top: 15px; color: #aaa; text-decoration: none; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="auth-container">
+            <h2>REGISTER</h2>
+            <form id="regForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="number" id="whatsapp" placeholder="No. WhatsApp" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="confirmPass" placeholder="Confirm Password" required>
+                <button type="submit" class="btn-buy">DAFTAR SEKARANG</button>
+            </form>
+            <a href="login.html" class="link-auth">Sudah punya akun? Login di sini</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const wa = document.getElementById('whatsapp').value;
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPass').value;
+
+            if (pass !== confirm) {
+                return alert("Password tidak cocok!");
+            }
+
+            // Simpan data ke localStorage (Database lokal)
+            const userData = { username: user, whatsapp: wa, password: pass };
+            localStorage.setItem('user_' + user, JSON.stringify(userData));
+
+            alert("Registrasi Berhasil! Silahkan Login.");
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
